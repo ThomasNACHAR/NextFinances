@@ -1,9 +1,18 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axiosFinances from "@/app/finances/axios/axiosFinances";
 
-export const registerUser = createAsyncThunk("user/fetchUser", async (user, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk("user/registerUser", async (user, { rejectWithValue }) => {
     try {
         const response = await axiosFinances.post("/users/register", user)
+        return response.data
+    } catch (error) {
+        return rejectWithValue(error.response?.data)
+    }
+})
+
+export const loginUser = createAsyncThunk("user/loginUser", async (user, { rejectWithValue }) => {
+    try {
+        const response = await axiosFinances.post("/users/login", user)
         return response.data
     } catch (error) {
         return rejectWithValue(error.response?.data)
@@ -17,21 +26,26 @@ interface User {
     isAdmin: boolean,
 }
 interface UserState {
-    userInfo: null | User;
-    loading: boolean;
-    error: string | null;
+    userInfo: null | User
+    loading: boolean
+    error: string | null,
+    connectionPanel: string
 }
 
 const initialState: UserState = {
     userInfo: null,
     loading: false,
-    error: null
+    error: null,
+    connectionPanel: "login"
 }
 
 const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
+        setConnectionPanel: (state: UserState, action) => {
+            state.connectionPanel = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -46,10 +60,25 @@ const userSlice = createSlice({
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false
-                state.error = action.error.message ?? "Erreur !"
-                console.log('échec !', action.payload)
+                state.error = action.payload ?? "Erreur !"
+            })
+            .addCase(loginUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.loading = false
+                console.log(action.payload)
+                localStorage.setItem("token", action.payload.token)
+                state.userInfo = action.payload.user
+            })
+            .addCase(loginUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload ?? "Erreur !"
             })
     }
 })
+
+export const { setConnectionPanel } = userSlice.actions
 
 export default userSlice.reducer

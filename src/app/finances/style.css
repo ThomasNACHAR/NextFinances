@@ -3,13 +3,17 @@
 @tailwind utilities;
 
 input {
-    @apply bg-finances rounded-full border-2 border-white py-4 px-8;
+    @apply bg-finances rounded-full border-2 border-white py-4 px-8 w-full text-center;
 }
 
 button {
-    @apply bg-finances rounded-full border-2 border-white py-4 px-8;
+    @apply bg-finances rounded-full border-2 border-white py-4 px-8 w-full text-center;
 }
 
 button:active {
     @apply bg-white;
+}
+
+.error {
+    @apply bg-myred rounded-full border-2 border-white py-4 px-8 w-full text-center;
 }

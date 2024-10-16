@@ -7,6 +7,7 @@ import { StoreProvider } from "@/app/finances/store/StoreProvider"
 import { useSelector } from "react-redux"
 import RegisterForm from "@/components/RegisterForm"
 import "./style.css"
+import ConnectionPanel from "@/components/ConnectionPanel";
 
 const helveticaNeue = localFont({
     src: "./fonts/HelveticaNeue.woff",
@@ -34,9 +35,9 @@ const LayoutContent = ({ children }) => {
             <FinancesHeader />
             <main className="p-4 relative">
                 {user ? (
-                    children // Si l'utilisateur est connecté, affiche les enfants
+                    children
                 ) : (
-                    <RegisterForm /> // Sinon, affiche le formulaire d'inscription
+                    <ConnectionPanel/>
                 )}
             </main>
         </div>
