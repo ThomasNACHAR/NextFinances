@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input {
+    @apply bg-finances rounded-full border-2 border-white py-4 px-8;
+}
+
+button {
+    @apply bg-finances rounded-full border-2 border-white py-4 px-8;
+}
+
+button:active {
+    @apply bg-white;
+}

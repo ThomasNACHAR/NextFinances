@@ -1,9 +1,13 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axiosFinances from "@/app/finances/axios/axiosFinances";
 
-export const registerUser = createAsyncThunk("user/fetchUser", async (user) => {
-    const response = await axiosFinances.post("/users/registers", user)
-    return response.data
+export const registerUser = createAsyncThunk("user/fetchUser", async (user, { rejectWithValue }) => {
+    try {
+        const response = await axiosFinances.post("/users/register", user)
+        return response.data
+    } catch (error) {
+        return rejectWithValue(error.response?.data)
+    }
 })
 
 interface User {
@@ -35,13 +39,15 @@ const userSlice = createSlice({
                 state.loading = true
                 state.error = null
             })
-            .addCase(registerUser.fulfilled, (state) => {
+            .addCase(registerUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.error = null
+                console.log('réussi !', action.payload)
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message ?? "Erreur !"
+                console.log('échec !', action.payload)
             })
     }
 })
