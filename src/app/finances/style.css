@@ -17,3 +17,35 @@ button:active {
 .error {
     @apply bg-myred rounded-full border-2 border-white py-4 px-8 w-full text-center;
 }
+
+.bg-gradient {
+    background: linear-gradient(135deg, #1A202C 0%, #4A5568 100%);
+}
+
+.card-input, .card-button {
+    background: linear-gradient(135deg, #1A202C 0%, #4A5568 100%);
+    @apply rounded-none border-2 border-white py-4 px-8 w-full text-center;
+}
+
+.card-select {
+    background: linear-gradient(135deg, #1A202C 0%, #4A5568 100%);
+    @apply rounded-none border-2 border-white py-2 px-2 w-full text-center;
+}
+
+.currency-input {
+    position: relative;
+    display: inline-block;
+}
+
+.currency-input input {
+    padding-right: 30px; /* Ajout d'espace pour le symbole */
+}
+
+.currency-input::after {
+    content: '€';
+    position: absolute;
+    right: 10px; /* Positionne le symbole à droite */
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Permet de cliquer sur le champ d'entrée */
+}

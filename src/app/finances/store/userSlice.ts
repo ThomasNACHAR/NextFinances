@@ -19,11 +19,29 @@ export const loginUser = createAsyncThunk("user/loginUser", async (user, { rejec
     }
 })
 
+export const fetchUser = createAsyncThunk("user/fetchUser", async (token, { rejectWithValue }) => {
+    try {
+        const response = await axiosFinances.get("/users/user")
+        return response.data
+    } catch (error) {
+        return rejectWithValue(error.response?.data)
+    }
+})
+
+export const addFunds = createAsyncThunk("user/addFunds", async (body, { rejectWithValue }) => {
+    try {
+        const response = await axiosFinances.post("/users/add_funds", body)
+        return response.data
+    } catch (error) {
+        return rejectWithValue(error.response?.data)
+    }
+})
+
 interface User {
     username: string,
     email: string,
     balance: number,
-    isAdmin: boolean,
+    admin: boolean,
 }
 interface UserState {
     userInfo: null | User
@@ -45,6 +63,10 @@ const userSlice = createSlice({
     reducers: {
         setConnectionPanel: (state: UserState, action) => {
             state.connectionPanel = action.payload
+        },
+        logout: (state: UserState) => {
+            localStorage.removeItem("token")
+            state.userInfo = null
         }
     },
     extraReducers: (builder) => {
@@ -76,9 +98,23 @@ const userSlice = createSlice({
                 state.loading = false
                 state.error = action.payload ?? "Erreur !"
             })
+            .addCase(fetchUser.fulfilled, (state, action) => {
+                state.userInfo = action.payload.user
+            })
+            .addCase(addFunds.pending, (state, action) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(addFunds.fulfilled, (state, action) => {
+                state.userInfo.balance = action.payload.user.balance
+            })
+            .addCase(addFunds.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload ?? "Erreur !"
+            })
     }
 })
 
-export const { setConnectionPanel } = userSlice.actions
+export const { setConnectionPanel, logout } = userSlice.actions
 
 export default userSlice.reducer
